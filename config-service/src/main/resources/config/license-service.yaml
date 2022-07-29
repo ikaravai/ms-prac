@@ -1,0 +1,28 @@
+example:
+  property: DEFAULT EXAMPLE
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: refresh, beans, env
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      db:
+        enabled: true
+      diskspace:
+        enabled: true
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: POSTGRESQL
+    show-sql: true
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+server:
+  port: 8090

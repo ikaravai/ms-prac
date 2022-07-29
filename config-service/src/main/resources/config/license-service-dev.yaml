@@ -1,0 +1,7 @@
+example:
+  property: DEV EXAMPLE
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/ms_prac
+    username: postgres
+#    password: postgres

@@ -1,55 +1,48 @@
 package com.solvd.ikaravai.licenseservice.service;
 
+import com.solvd.ikaravai.licenseservice.config.ServiceConfig;
 import com.solvd.ikaravai.licenseservice.model.License;
+import com.solvd.ikaravai.licenseservice.repository.LicenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class LicenseService {
 
-    private final MessageSource messageSource;
+    private final MessageSource messages;
+    private final LicenseRepository licenseRepository;
+    private final ServiceConfig config;
 
-    public License getLicense(String licenseId, String organizationId) {
-        return License.builder()
-                .id(new Random().nextLong())
-                .licenseId(licenseId)
-                .organizationId(organizationId)
-                .description("Software product")
-                .productName("Ostock")
-                .licenseType("full")
-                .build();
-    }
-
-    public String createLicense(License license, String organizationId, Locale locale) {
-        String responseMessage = null;
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = String.format(messageSource.getMessage(
-                    "license.create.message", null, locale
-            ), license.toString());
+    public License getLicense(String licenseId, String organizationId){
+        License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
+        if (null == license) {
+            throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null),licenseId, organizationId));
         }
-        return responseMessage;
+        return license.withComment(config.getProperty());
     }
 
-    public String updateLicense(License license, String organizationId) {
-        String responseMessage = null;
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = String.format("${license.update.message}", license);
-        }
-        return responseMessage;
+    public License createLicense(License license){
+        license.setLicenseId(UUID.randomUUID().toString());
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
     }
 
-    public String deleteLicense(String licenseId, String organizationId) {
+    public License updateLicense(License license){
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
+    }
+
+    public String deleteLicense(String licenseId){
         String responseMessage = null;
-        responseMessage = String.format(
-                "${license.delete.message}", licenseId, organizationId
-        );
+        License license = new License();
+        license.setLicenseId(licenseId);
+        licenseRepository.delete(license);
+        responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
         return responseMessage;
+
     }
 }

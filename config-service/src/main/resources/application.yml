@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: config-service
+  profiles:
+    active: native, git
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+        git:
+          uri: https://github.com/ikaravai/config.git
+          search-paths: license-service
+#        vault:
+#          port: 8200
+#          host: vault
+#          kv-version: 2
+server:
+  port: 8071
+#encrypt:
+#  key: myverymuchcomplicatedandlongencryptionkey

@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  my-config-service:
+    build: ./config-service
+    ports:
+      - "8071:8071"
+    container_name: my-config-service
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://config-service:8071/license-service/dev" ]
+#      interval: 3s
+#      timeout: 1s
+#      retries: 10
+#      start_period: 5s
+    restart: unless-stopped
+  my-lic-service:
+    image: license-service
+    container_name: my-lic-service
+    ports:
+      - "8090:8090"
+    environment:
+      - "SPRING_PROFILE_ACTIVE=dev"
+    restart: unless-stopped
+  vault:
+    image: vault
+    container_name: vault
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=1234
+    ports:
+      - "8200:8200"
+    restart: unless-stopped
+    volumes:
+      - vault:/var/lib/vault/data
+volumes:
+  vault:
+    driver: local
