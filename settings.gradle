@@ -1,3 +1,6 @@
 rootProject.name = 'ms-prac'
 
 include 'license-service'
+include 'config-service'
+include 'eureka-service'
+include 'organization-service'

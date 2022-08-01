@@ -27,8 +27,11 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}"
-//    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap:${springCloudVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-bootstrap:${springCloudVersion}"
     implementation "org.springframework.cloud:spring-cloud-context:${springCloudVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}"
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

@@ -4,4 +4,16 @@ spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/ms_prac
     username: postgres
-#    password: postgres
+    password: postgres
+  sql:
+    init:
+      schema-locations: classpath:/sql/schema.sql
+      data-locations: classpath:/sql/data.sql
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://my-eureka-service:8070/eureka

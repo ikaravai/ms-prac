@@ -1,6 +1,6 @@
 spring:
   application:
-    name: config-service
+    name: my-config-service
   profiles:
     active: native, git
   cloud:
@@ -11,10 +11,10 @@ spring:
         git:
           uri: https://github.com/ikaravai/config.git
           search-paths: license-service
-#        vault:
-#          port: 8200
-#          host: vault
-#          kv-version: 2
+        vault:
+          port: 8200
+          host: vault
+          kv-version: 2
 server:
   port: 8071
 #encrypt:

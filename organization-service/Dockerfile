@@ -1,6 +1,6 @@
 FROM openjdk:17-alpine as build
 WORKDIR application
-ARG JAR_FILE=build/libs/license-service-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/organization-service-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
 
@@ -14,10 +14,3 @@ COPY --from=build application/spring-boot-loader/ ./
 COPY --from=build application/snapshot-dependencies/ ./
 COPY --from=build application/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
-
-
-
-
-
-
-

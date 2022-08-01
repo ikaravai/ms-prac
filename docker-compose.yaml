@@ -1,26 +1,67 @@
 version: '3.8'
 
 services:
+  my-eureka-service:
+    build: ./eureka-service/
+    hostname: my-eureka-service
+    ports:
+      - "8070:8070"
+    container_name: my-eureka-service
+    depends_on:
+      my-config-service:
+        condition: service_healthy
+    restart: unless-stopped
   my-config-service:
     build: ./config-service
     ports:
       - "8071:8071"
     container_name: my-config-service
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://config-service:8071/license-service/dev" ]
-#      interval: 3s
-#      timeout: 1s
-#      retries: 10
-#      start_period: 5s
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://my-config-service:8071/license-service/dev" ]
+      interval: 3s
+      timeout: 1s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+  my-org-service:
+    #    image: license-service
+    build: ./organization-service
+    container_name: my-org-service
+    depends_on:
+      postgres:
+        condition: service_started
+      my-config-service:
+        condition: service_healthy
+    ports:
+      - "8091:8091"
+    environment:
+      - "SPRING_PROFILE_ACTIVE=dev"
     restart: unless-stopped
   my-lic-service:
-    image: license-service
+#    image: license-service
+    build: ./license-service
     container_name: my-lic-service
+    depends_on:
+      postgres:
+        condition: service_started
+      my-config-service:
+        condition: service_healthy
     ports:
       - "8090:8090"
     environment:
       - "SPRING_PROFILE_ACTIVE=dev"
     restart: unless-stopped
+  postgres:
+    image: postgres:14.1-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
   vault:
     image: vault
     container_name: vault
@@ -33,4 +74,6 @@ services:
       - vault:/var/lib/vault/data
 volumes:
   vault:
+    driver: local
+  postgres:
     driver: local

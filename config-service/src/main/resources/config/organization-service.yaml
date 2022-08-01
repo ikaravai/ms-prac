@@ -1,0 +1,38 @@
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: refresh, beans, env
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      db:
+        enabled: true
+      diskspace:
+        enabled: true
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: POSTGRESQL
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://postgres:5432/ms_prac
+    username: postgres
+    password: postgres
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+server:
+  port: 8091
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://my-eureka-service:8070/eureka
