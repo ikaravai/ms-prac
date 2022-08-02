@@ -7,12 +7,20 @@ import com.solvd.ikaravai.licenseservice.repository.LicenseRepository;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationDiscoveryClient;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationFeignClient;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationRestTemplateClient;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +33,52 @@ public class LicenseService {
     private final OrganizationDiscoveryClient organizationDiscoveryClient;
     private final OrganizationFeignClient organizationFeignClient;
     private final OrganizationRestTemplateClient organizationRestTemplateClient;
+
+    @CircuitBreaker(name = "licenseService"
+            , fallbackMethod = "getLicensesByOrganizationFallback"
+    )
+    @Bulkhead(name = "bulkheadLicenseService"
+//            , fallbackMethod = "getLicensesByOrganizationFallback"
+//            ,
+//            type = Bulkhead.Type.SEMAPHORE
+    )
+    @Retry(name = "retryLicenseService", fallbackMethod = "getLicensesByOrganizationFallback")
+    public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
+//        log.info("getLicensesByOrganization Correlation id: {}",
+//                UserContextHolder.getContext().getCorrelationId());
+        randomlyRunLong();
+        return licenseRepository.findByOrganizationId(organizationId);
+    }
+
+    public List<License> getLicensesByOrganizationFallback(String organizationId, Throwable t) throws TimeoutException {
+        List<License> fallbackList = new ArrayList<>();
+        License license = new License();
+        license.setLicenseId("0000-0000-0001");
+        license.setOrganizationId(organizationId);
+        license.setProductName("Sry, not available :(");
+        fallbackList.add(license);
+        return fallbackList;
+    }
+
+    @CircuitBreaker(name = "organizationService")
+    private Organization getOrganization(String organizationId) {
+        return organizationRestTemplateClient.getOrganization(organizationId);
+    }
+
+    private void randomlyRunLong() throws TimeoutException {
+        Random rand = new Random();
+        int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+        if (randomNum == 2) sleep();
+    }
+    private void sleep() throws TimeoutException{
+        try {
+            log.info("Sleep");
+            Thread.sleep(500);
+            throw new java.util.concurrent.TimeoutException("Timeout");
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+    }
 
     public License getLicense(String licenseId, String organizationId, String clientType) {
         License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
@@ -50,7 +104,7 @@ public class LicenseService {
             }
             case "rest" -> {
                 log.info("I am using the rest client");
-                organization = organizationRestTemplateClient.getOrganization(organizationId);
+                organization = getOrganization(organizationId);
             }
             case "discovery" -> {
                 log.info("I am using the discovery client");
@@ -58,7 +112,7 @@ public class LicenseService {
             }
             default -> {
                 log.info("I am using the rest client - DEFAULT");
-                organization = organizationRestTemplateClient.getOrganization(organizationId);
+                organization = getOrganization(organizationId);
             }
         }
         return organization;

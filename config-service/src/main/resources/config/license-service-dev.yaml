@@ -9,6 +9,10 @@ spring:
     init:
       schema-locations: classpath:/sql/schema.sql
       data-locations: classpath:/sql/data.sql
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
 eureka:
   instance:
     preferIpAddress: true

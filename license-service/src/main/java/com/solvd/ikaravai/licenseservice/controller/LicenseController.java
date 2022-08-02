@@ -3,9 +3,13 @@ package com.solvd.ikaravai.licenseservice.controller;
 import com.solvd.ikaravai.licenseservice.model.License;
 import com.solvd.ikaravai.licenseservice.service.LicenseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -13,6 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("v1/organization/{organizationId}/license")
 @RequiredArgsConstructor
+@Log4j2
 public class LicenseController {
 
     private final LicenseService licenseService;
@@ -52,7 +57,12 @@ public class LicenseController {
     public License getLicensesWithClient( @PathVariable("organizationId") String organizationId,
                                           @PathVariable("licenseId") String licenseId,
                                           @PathVariable("clientType") String clientType) {
-
         return licenseService.getLicense(licenseId, organizationId, clientType);
+    }
+
+    @GetMapping
+    public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
+//        log.info("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+        return licenseService.getLicensesByOrganization(organizationId);
     }
 }

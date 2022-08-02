@@ -14,6 +14,7 @@ repositories {
 
 ext {
     springCloudVersion = '3.1.3'
+    resilienceVersion = '1.7.1'
 }
 
 bootJar {
@@ -32,6 +33,10 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}"
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+    implementation "io.github.resilience4j:resilience4j-spring-boot2:${resilienceVersion}"
+    implementation "io.github.resilience4j:resilience4j-circuitbreaker:${resilienceVersion}"
+    implementation "io.github.resilience4j:resilience4j-timelimiter:${resilienceVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

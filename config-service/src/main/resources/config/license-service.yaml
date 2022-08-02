@@ -5,7 +5,7 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: refresh, beans, env
+        include: "*"
   endpoint:
     health:
       enabled: true
