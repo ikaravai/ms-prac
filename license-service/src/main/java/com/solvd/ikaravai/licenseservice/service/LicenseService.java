@@ -7,8 +7,10 @@ import com.solvd.ikaravai.licenseservice.repository.LicenseRepository;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationDiscoveryClient;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationFeignClient;
 import com.solvd.ikaravai.licenseservice.service.client.OrganizationRestTemplateClient;
+import com.solvd.ikaravai.licenseservice.utils.UserContextHolder;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,17 +37,20 @@ public class LicenseService {
     private final OrganizationRestTemplateClient organizationRestTemplateClient;
 
     @CircuitBreaker(name = "licenseService"
-            , fallbackMethod = "getLicensesByOrganizationFallback"
+//            , fallbackMethod = "getLicensesByOrganizationFallback"
     )
     @Bulkhead(name = "bulkheadLicenseService"
 //            , fallbackMethod = "getLicensesByOrganizationFallback"
 //            ,
 //            type = Bulkhead.Type.SEMAPHORE
     )
-    @Retry(name = "retryLicenseService", fallbackMethod = "getLicensesByOrganizationFallback")
+    @Retry(name = "retryLicenseService"
+            , fallbackMethod = "getLicensesByOrganizationFallback"
+    )
+    @RateLimiter(name = "limiterLicenseService", fallbackMethod = "getLicensesByOrganizationFallback")
     public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
-//        log.info("getLicensesByOrganization Correlation id: {}",
-//                UserContextHolder.getContext().getCorrelationId());
+        log.info("getLicensesByOrganization Correlation id: {}",
+                UserContextHolder.getContext().getCorrelationId());
         randomlyRunLong();
         return licenseRepository.findByOrganizationId(organizationId);
     }

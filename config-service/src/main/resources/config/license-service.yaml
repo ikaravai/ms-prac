@@ -24,5 +24,6 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type: TRACE
+    com.solvd.ikaravai: DEBUG
 server:
   port: 8090

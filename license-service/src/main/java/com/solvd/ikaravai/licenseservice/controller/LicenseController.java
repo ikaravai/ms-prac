@@ -2,6 +2,7 @@ package com.solvd.ikaravai.licenseservice.controller;
 
 import com.solvd.ikaravai.licenseservice.model.License;
 import com.solvd.ikaravai.licenseservice.service.LicenseService;
+import com.solvd.ikaravai.licenseservice.utils.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,7 @@ public class LicenseController {
 
     @GetMapping
     public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
-//        log.info("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+        log.info("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         return licenseService.getLicensesByOrganization(organizationId);
     }
 }
