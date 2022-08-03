@@ -10,12 +10,28 @@ spring:
           search-locations: classpath:/config
         git:
           uri: https://github.com/ikaravai/config.git
-          search-paths: license-service
+          search-paths:
+            - gateway-service
+            - license-service
         vault:
           port: 8200
           host: vault
           kv-version: 2
 server:
   port: 8071
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      db:
+        enabled: true
+      diskspace:
+        enabled: true
 #encrypt:
 #  key: myverymuchcomplicatedandlongencryptionkey

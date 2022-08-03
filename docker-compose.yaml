@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  my-gateway-service:
+    build: ./gateway-service/
+    hostname: my-gateway-service
+    ports:
+      - "8072:8072"
+    container_name: my-gateway-service
+    depends_on:
+      my-config-service:
+        condition: service_healthy
+    restart: unless-stopped
   my-eureka-service:
     build: ./eureka-service/
     hostname: my-eureka-service
