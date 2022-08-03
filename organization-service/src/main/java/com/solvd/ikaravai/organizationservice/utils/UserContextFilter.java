@@ -1,4 +1,4 @@
-package com.solvd.ikaravai.licenseservice.utils;
+package com.solvd.ikaravai.organizationservice.utils;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;

@@ -11,7 +11,7 @@ spring:
         git:
           uri: https://github.com/ikaravai/config.git
           search-paths:
-            - gateway-service
+#            - gateway-service
             - license-service
         vault:
           port: 8200
