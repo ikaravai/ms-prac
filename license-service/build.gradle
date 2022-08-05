@@ -36,10 +36,21 @@ dependencies {
     implementation "io.github.resilience4j:resilience4j-spring-boot2:${resilienceVersion}"
     implementation "io.github.resilience4j:resilience4j-circuitbreaker:${resilienceVersion}"
     implementation "io.github.resilience4j:resilience4j-timelimiter:${resilienceVersion}"
+
+    implementation 'org.keycloak:keycloak-spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+}
+
+dependencyManagement {
+    imports {
+//		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:18.0.2"
+    }
 }
 
 tasks.named('test') {

@@ -36,3 +36,13 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://my-eureka-service:8070/eureka
+# KEYCLOAK
+keycloak:
+  realm: ms-realm
+  auth-server-url: http://keycloak:8080/auth
+  ssl-required: external
+  resource: msprac
+  credentials:
+    secret: rpjxRAMhSaRK1JaBiI5WVoLvkBv8Gxyv
+  use-resource-role-mappings: true
+  bearer-only: true

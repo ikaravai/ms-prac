@@ -5,6 +5,7 @@ import com.solvd.ikaravai.organizationservice.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @GetMapping("/{organizationId}")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Organization> getOrganization(@PathVariable("organizationId") String organizationId) {
         return ResponseEntity.ok(organizationService.findById(organizationId));
@@ -27,6 +29,7 @@ public class OrganizationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Organization>  saveOrganization(@RequestBody Organization organization) {
         return ResponseEntity.ok(organizationService.create(organization));
