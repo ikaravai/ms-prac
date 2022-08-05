@@ -15,6 +15,18 @@ management:
       diskspace:
         enabled: true
 spring:
+# STREAM, KAFKA
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licenseGroup
+      kafka:
+        binder:
+          zkNodes: zookeeper
+          brokers: kafka
   jpa:
     hibernate:
       ddl-auto: none
@@ -37,3 +49,7 @@ keycloak:
     secret: rpjxRAMhSaRK1JaBiI5WVoLvkBv8Gxyv
   use-resource-role-mappings: true
   bearer-only: true
+# REDIS
+redis:
+  server: redis
+  port: 6379

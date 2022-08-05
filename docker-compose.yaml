@@ -1,6 +1,36 @@
 version: '3.8'
 
 services:
+  zookeeper:
+    image: zookeeper:latest
+    ports:
+      - "2181:2181"
+    restart: always
+    container_name: zookeeper
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    restart: always
+    container_name: kafka
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_ADVERTISED_PORT=9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CREATE_TOPICS=dresses:1:1,ratings:1:1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+    container_name: redis
+    volumes:
+      - redis:/var/lib/redis/data
   keycloak:
     restart: always
     image: jboss/keycloak
@@ -106,6 +136,10 @@ volumes:
   postgres:
     driver: local
   keycloak:
+    driver: local
+  kafka:
+    driver: local
+  redis:
     driver: local
 networks:
   keycloak:
