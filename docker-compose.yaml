@@ -40,7 +40,14 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: h2
+      DB_VENDOR: postgres
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - postgres
     volumes:
       - keycloak:/var/lib/keycloak/data
 #    networks:

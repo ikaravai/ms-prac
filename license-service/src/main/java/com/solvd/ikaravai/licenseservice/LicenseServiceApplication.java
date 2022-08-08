@@ -34,7 +34,7 @@ import java.util.Locale;
 @RefreshScope
 //@EnableDiscoveryClient
 @EnableFeignClients
-@EnableBinding(Sink.class)
+//@EnableBinding(Sink.class)
 @Log4j2
 public class LicenseServiceApplication {
 
@@ -60,10 +60,10 @@ public class LicenseServiceApplication {
         return template;
     }
 
-    @StreamListener(Sink.INPUT)
-    public void loggerSink(OrganizationChangeModel change) {
-        log.info("Received an {} event for organization ID: {}", change.getAction(), change.getOrganizationId());
-    }
+//    @StreamListener(Sink.INPUT)
+//    public void loggerSink(OrganizationChangeModel change) {
+//        log.info("Received an {} event for organization ID: {}", change.getAction(), change.getOrganizationId());
+//    }
 
     @Bean
     public LocaleResolver localeResolver() {

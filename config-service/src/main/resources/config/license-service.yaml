@@ -16,10 +16,21 @@ management:
         enabled: true
 spring:
 # STREAM, KAFKA
+#  cloud:
+#    stream:
+#      bindings:
+#        input:
+#          destination: orgChangeTopic
+#          content-type: application/json
+#          group: licenseGroup
+#      kafka:
+#        binder:
+#          zkNodes: zookeeper
+#          brokers: kafka
   cloud:
     stream:
       bindings:
-        input:
+        inboundOrgChanges:
           destination: orgChangeTopic
           content-type: application/json
           group: licenseGroup
@@ -46,7 +57,7 @@ keycloak:
   ssl-required: external
   resource: msprac
   credentials:
-    secret: rpjxRAMhSaRK1JaBiI5WVoLvkBv8Gxyv
+    secret: cTB4fi95e5uF6KBfrzV8zJ8FMcWtMChs
   use-resource-role-mappings: true
   bearer-only: true
 # REDIS

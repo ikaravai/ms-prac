@@ -54,6 +54,6 @@ keycloak:
   ssl-required: external
   resource: msprac
   credentials:
-    secret: rpjxRAMhSaRK1JaBiI5WVoLvkBv8Gxyv
+    secret: cTB4fi95e5uF6KBfrzV8zJ8FMcWtMChs
   use-resource-role-mappings: true
   bearer-only: true
