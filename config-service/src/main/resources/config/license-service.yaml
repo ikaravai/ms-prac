@@ -38,6 +38,11 @@ spring:
         binder:
           zkNodes: zookeeper
           brokers: kafka
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
   jpa:
     hibernate:
       ddl-auto: none

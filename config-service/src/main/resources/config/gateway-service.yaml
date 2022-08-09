@@ -29,6 +29,11 @@ spring:
           filters:
             - RewritePath=/license/(?<path>.*), /$\{path}
             - RemoveRequestHeader=Cookie,Set-Cookie
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
 management:
   endpoints:
     enabled-by-default: true

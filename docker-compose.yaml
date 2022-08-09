@@ -1,17 +1,28 @@
 version: '3.8'
 
 services:
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    restart: always
+    depends_on:
+      - elasticsearch
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - "ES_HOSTS=elasticsearch:9300"
+    ports:
+      - "9411:9411"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
     container_name: elasticsearch
     restart: always
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      # true to make web login appear
-      - xpack.security.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - xpack.security.http.ssl.enabled=false
+#       true to make web login appear
+#      - xpack.security.enabled=false
+#      - xpack.security.transport.ssl.enabled=false
+#      - xpack.security.http.ssl.enabled=false
       - cluster.name=docker-cluster
       - node.name=elasticsearch
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -25,7 +36,7 @@ services:
       - "9300:9300"
       - "9200:9200"
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.3.3
+    image: docker.elastic.co/kibana/kibana:7.7.0
     container_name: kibana
     restart: always
     environment:
@@ -35,7 +46,7 @@ services:
     depends_on:
       - elasticsearch
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.3.3
+    image: docker.elastic.co/logstash/logstash:7.7.0
     user: root
     container_name: logstash
     restart: always

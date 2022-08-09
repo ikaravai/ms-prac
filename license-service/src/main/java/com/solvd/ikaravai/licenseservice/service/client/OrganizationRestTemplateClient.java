@@ -1,16 +1,16 @@
 package com.solvd.ikaravai.licenseservice.service.client;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.solvd.ikaravai.licenseservice.model.Organization;
 import com.solvd.ikaravai.licenseservice.repository.OrganizationRedisRepository;
 import com.solvd.ikaravai.licenseservice.utils.UserContext;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +19,7 @@ public class OrganizationRestTemplateClient {
 
     private final KeycloakRestTemplate restTemplate;
     private final OrganizationRedisRepository organizationRedisRepository;
+    private final Tracer tracer;
 
     public Organization getOrganization(String organizationId) {
         log.info("Im license service.getOrganization: {}", UserContext.getCorrelationId());
@@ -43,11 +44,17 @@ public class OrganizationRestTemplateClient {
     }
 
     private Organization checkRedisCache(String organizationId) {
+        ScopedSpan newSpan = tracer.startScopedSpan("readLicensingDataFromRedis");
         try {
             return organizationRedisRepository.findById(organizationId).orElse(null);
         } catch (Exception ex){
             log.error("Error encountered while trying to retrieve organization {} check Redis Cache.  Exception {}", organizationId, ex);
             return null;
+        } finally {
+            log.info("CLOSING REDIS SPAN ------------");
+            newSpan.tag("peer.service", "redis");
+            newSpan.annotate("Client received");
+            newSpan.finish();
         }
     }
 
