@@ -43,3 +43,6 @@ management:
         enabled: true
       diskspace:
         enabled: true
+logging:
+  level:
+    com.solvd.ikaravai: DEBUG

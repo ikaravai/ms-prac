@@ -5,6 +5,7 @@ import com.solvd.ikaravai.licenseservice.repository.OrganizationRedisRepository;
 import com.solvd.ikaravai.licenseservice.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class OrganizationRestTemplateClient {
 
     private final KeycloakRestTemplate restTemplate;

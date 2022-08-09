@@ -14,6 +14,7 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class LicenseService {
 
     private final MessageSource messages;

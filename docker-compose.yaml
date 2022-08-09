@@ -1,6 +1,49 @@
 version: '3.8'
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      # true to make web login appear
+      - xpack.security.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - cluster.name=docker-cluster
+      - node.name=elasticsearch
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/var/lib/elasticsearch
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.3.3
+    container_name: kibana
+    restart: always
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.3.3
+    user: root
+    container_name: logstash
+    restart: always
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config:/etc/logstash/conf.d
+    ports:
+      - "5001:5001"
   zookeeper:
     image: zookeeper:latest
     ports:
@@ -65,6 +108,8 @@ services:
     depends_on:
       my-config-service:
         condition: service_healthy
+      my-eureka-service:
+        condition: service_started
     restart: unless-stopped
   my-eureka-service:
     build: ./eureka-service/
@@ -138,6 +183,8 @@ services:
     volumes:
       - vault:/var/lib/vault/data
 volumes:
+  elasticsearch:
+    driver: local
   vault:
     driver: local
   postgres:

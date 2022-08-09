@@ -5,11 +5,12 @@ import com.solvd.ikaravai.licenseservice.event.model.OrganizationChangeModel;
 import com.solvd.ikaravai.licenseservice.repository.OrganizationRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 
 @EnableBinding(CustomChannel.class)
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class OrganizationChangeHandler {
 

@@ -5,13 +5,14 @@ import com.solvd.ikaravai.organizationservice.event.model.OrganizationChangeMode
 import com.solvd.ikaravai.organizationservice.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class SimpleSourceBean {
 
     private final Source source;

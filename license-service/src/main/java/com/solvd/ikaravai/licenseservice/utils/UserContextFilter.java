@@ -1,6 +1,7 @@
 package com.solvd.ikaravai.licenseservice.utils;
 
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -8,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Component
-@Log4j2
+@Slf4j
 public class UserContextFilter implements Filter {
 
     @Override

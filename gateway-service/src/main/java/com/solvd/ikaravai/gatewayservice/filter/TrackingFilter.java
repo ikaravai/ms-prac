@@ -2,6 +2,7 @@ package com.solvd.ikaravai.gatewayservice.filter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @Order(1)
 @Component
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class TrackingFilter implements GlobalFilter {
 
