@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.solvd.ikaravai.mybatisservice.mapper.UserMapper">
+    <resultMap id="UserResultMap" type="user">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <association property="address" resultMap="AddressResultMap"/>
+    </resultMap>
+    <resultMap id="AddressResultMap" type="address">
+        <id column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="street" property="street" jdbcType="VARCHAR"/>
+        <result column="house_number" property="houseNumber" jdbcType="INTEGER"/>
+        <result column="index" property="index" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="user_base">
+        id, email, name
+    </sql>
+    <sql id="user_full">
+        id, email, name, a.user_id, a.city, a.street, a.house_number, a.index
+    </sql>
+
+    <select id="findAllUsers" resultMap="UserResultMap">
+        SELECT
+        <include refid="user_base"/>
+        FROM "users" u
+    </select>
+
+    <select id="findUserById" useCache="true" parameterType="long" resultMap="UserResultMap">
+        SELECT
+        <include refid="user_full"/>
+        FROM "users" u
+        JOIN addresses a on u.id = a.user_id
+        WHERE u.id = #{id}
+    </select>
+
+    <insert id="saveUser" useGeneratedKeys="true" parameterType="user">
+        INSERT INTO "users"(email, name)
+        VALUES (#{email}, #{name})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE
+        "users" SET
+        <if test="student.email!=null">email=#{student.email},</if>
+        <if test="student.name!=null">name=#{student.name}</if>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="long">
+        DELETE
+        FROM "users"
+        WHERE id = #{id}
+    </delete>
+</mapper>
