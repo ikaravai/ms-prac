@@ -185,8 +185,11 @@ services:
     restart: unless-stopped
   nginx:
     image: nginx:stable-alpine
+#    command: mkdir -p /var/nginx/cache
     volumes:
+      - nginxcache:/var/nginx/cache
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/auth/authdetails:/etc/nginx/conf.d/authdetails:ro
     restart: on-failure
     container_name: nginx
     ports:
@@ -213,6 +216,8 @@ services:
     volumes:
       - vault:/var/lib/vault/data
 volumes:
+  nginxcache:
+    driver: local
   elasticsearch:
     driver: local
   vault:
