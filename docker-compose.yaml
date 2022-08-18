@@ -183,6 +183,17 @@ services:
     environment:
       - "SPRING_PROFILE_ACTIVE=dev"
     restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:3.10.7-management-alpine
+    container_name: rabbitmq
+    restart: on-failure
+    environment:
+      - RABBITMQ_DEFAULT_PASS=root
+      - RABBITMQ_DEFAULT_USER=root
+      - TZ=Europe/Minsk
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   nginx:
     image: nginx:stable-alpine
 #    command: mkdir -p /var/nginx/cache
@@ -191,6 +202,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/auth/authdetails:/etc/nginx/conf.d/authdetails:ro
     restart: on-failure
+    environment:
+      - TZ=Europe/Minsk
     container_name: nginx
     ports:
       - "9999:80"
