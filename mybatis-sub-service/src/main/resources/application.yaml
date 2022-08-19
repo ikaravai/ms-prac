@@ -1,0 +1,25 @@
+rabbitmq:
+  in:
+    simple:
+      routingKey: save_user_route
+      queue: save_user_q
+      exchange: save_user_ex
+  out:
+    simple:
+      routingKey: save_user_resp_route
+      queue: save_user_resp_q
+      exchange: save_user_resp_ex
+    complex:
+      topic:
+        queue1: topic_queue1
+        queue2: topic_queue2
+        exchange: topic_exchange
+        pattern1: "*.important.*"
+        pattern2: "*.casual.*"
+server:
+  port: 9091
+spring:
+  rabbitmq:
+    host: rabbitmq
+    username: root
+    password: root

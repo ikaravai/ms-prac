@@ -43,8 +43,8 @@
     <update id="updateUser">
         UPDATE
         "users" SET
-        <if test="student.email!=null">email=#{student.email},</if>
-        <if test="student.name!=null">name=#{student.name}</if>
+        <if test="user.email!=null">email=#{user.email},</if>
+        <if test="user.name!=null">name=#{user.name}</if>
         WHERE id = #{id}
     </update>
 

@@ -1,4 +1,8 @@
 spring:
+  rabbitmq:
+    host: rabbitmq
+    username: root
+    password: root
   datasource:
     url: jdbc:postgresql://postgres:5432/mybatis
     username: postgres
@@ -16,3 +20,21 @@ mybatis:
 logging:
   level:
     com.solvd.ikaravai.mybatisservice.mapper: TRACE
+    org.springframework.amqp: INFO
+    com.rabbitmq: INFO
+rabbitmq:
+  out:
+    simple:
+      routingKey: save_user_route
+      queue: save_user_q
+      exchange: save_user_ex
+    complex:
+      fanout:
+        queue1: fanout_queue1
+        queue2: fanout_queue2
+        exchange: fanout_exchange
+  in:
+    simple:
+      routingKey: save_user_resp_route
+      queue: save_user_resp_q
+      exchange: save_user_resp_ex

@@ -183,6 +183,14 @@ services:
     environment:
       - "SPRING_PROFILE_ACTIVE=dev"
     restart: unless-stopped
+  mybatis-sub-service:
+    build: ./mybatis-sub-service
+    container_name: mybatis-sub-service
+    ports:
+      - "9091:9091"
+    environment:
+      - "SPRING_PROFILE_ACTIVE=dev"
+    restart: unless-stopped
   rabbitmq:
     image: rabbitmq:3.10.7-management-alpine
     container_name: rabbitmq
@@ -194,6 +202,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/data
   nginx:
     image: nginx:stable-alpine
 #    command: mkdir -p /var/nginx/cache
@@ -229,6 +239,8 @@ services:
     volumes:
       - vault:/var/lib/vault/data
 volumes:
+  rabbitmq:
+    driver: local
   nginxcache:
     driver: local
   elasticsearch:
