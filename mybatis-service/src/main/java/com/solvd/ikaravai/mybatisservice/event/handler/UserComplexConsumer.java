@@ -18,6 +18,6 @@ public class UserComplexConsumer {
 
     @RabbitListener(queues = "topic_queue2")
     public void receiveMessageFromFanout2(MessagePayload messagePayload) {
-        log.info("Hi from SUB, [CASUAL] TOPIC-2- : {}", messagePayload);
+        log.info("Hi from MYBATIS, [CASUAL] TOPIC-2- : {}", messagePayload);
     }
 }
