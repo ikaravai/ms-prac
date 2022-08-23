@@ -20,6 +20,8 @@ server:
   port: 9091
 spring:
   rabbitmq:
-    host: rabbitmq
+    host: nginx
+#    host: rabbitmq
     username: root
     password: root
+    port: 81

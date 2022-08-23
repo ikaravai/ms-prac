@@ -195,15 +195,66 @@ services:
     image: rabbitmq:3.10.7-management-alpine
     container_name: rabbitmq
     restart: on-failure
+    hostname: rabbitmq
+#    command:
+#      - rabbitmqctl set_policy ha_fed ".*"
+#      - '{"federation-upstream-set":"all", "ha-mode":"nodes", "ha-params":["rabbit@rabbitmq", "rabbit@rabbitmq-2", "rabbit@rabbitmq-3"]}'
+#      - --priority 1 --apply-to queues
+    # && rabbitmqctl start_app
+#    command: >
+#      rabbitmqctl start_app
+#      && 
+#      rabbitmqctl set_policy ha_fed ".*" \
+#      '{"federation-upstream-set":"all", "ha-sync-mode":"automatic", "ha-mode":"nodes", "ha-params":["rabbit@rabbitmq", "rabbit@rabbitmq-2", "rabbit@rabbitmq-3"]}' \
+#      --priority 1 --apply-to queues
     environment:
       - RABBITMQ_DEFAULT_PASS=root
       - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_ERLANG_COOKIE=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
       - TZ=Europe/Minsk
     ports:
-      - "5672:5672"
+#      - "5672:5672"
       - "15672:15672"
     volumes:
       - rabbitmq:/var/lib/rabbitmq/data
+      - ${PWD}/rabbit-config/rabbitmq/:/config/
+  rabbitmq-2:
+    image: rabbitmq:3.10.7-management-alpine
+    container_name: rabbitmq-2
+    hostname: rabbitmq-2
+    restart: on-failure
+#    command: rabbitmq-plugins enable rabbitmq_federation
+    environment:
+      - RABBITMQ_DEFAULT_PASS=root
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_ERLANG_COOKIE=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+      - TZ=Europe/Minsk
+    ports:
+#      - "5672:5672"
+      - "15673:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/data
+      - ${PWD}/rabbit-config/rabbitmq-2/:/config/
+  rabbitmq-3:
+    image: rabbitmq:3.10.7-management-alpine
+    container_name: rabbitmq-3
+    hostname: rabbitmq-3
+    restart: on-failure
+#    command: rabbitmq-plugins enable rabbitmq_federation
+    environment:
+      - RABBITMQ_DEFAULT_PASS=root
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_ERLANG_COOKIE=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+      - TZ=Europe/Minsk
+    ports:
+#      - "5672:5672"
+      - "15674:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/data
+      - ${PWD}/rabbit-config/rabbitmq-3/:/config/
   nginx:
     image: nginx:stable-alpine
 #    command: mkdir -p /var/nginx/cache
@@ -216,6 +267,7 @@ services:
       - TZ=Europe/Minsk
     container_name: nginx
     ports:
+      - "10000:81"
       - "9999:80"
   postgres:
     image: postgres:14.1-alpine

@@ -1,0 +1,7 @@
+1. on each instance:
+docker exec -it rabbitmq-[1:+inf] rabbitmq-plugins enable rabbitmq_federation
+
+2. on one (mb main?)
+rabbitmqctl set_policy ha_fed ".*" \
+      '{"federation-upstream-set":"all", "ha-sync-mode":"automatic", "ha-mode":"nodes", "ha-params":["rabbit@rabbitmq", "rabbit@rabbitmq-2", "rabbit@rabbitmq-3"]}' \
+      --priority 1 --apply-to queues
