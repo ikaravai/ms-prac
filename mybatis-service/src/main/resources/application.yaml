@@ -1,8 +1,10 @@
 spring:
   rabbitmq:
-    host: rabbitmq
+    host: nginx
+#    host: rabbitmq
     username: root
     password: root
+    port: 81
   datasource:
     url: jdbc:postgresql://postgres:5432/mybatis
     username: postgres
