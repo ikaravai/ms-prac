@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    http {
+
+        include mime.types;
+
+        upstream mybatis {
+            least_conn;
+            server mybatis-service-service:9090 max_fails=3 fail_timeout=1s weight=5;
+            server mybatis-sub-service-service:9091    backup;
+    #         server my-config-service:8071    backup;
+        }
+
+        proxy_cache_path /var/nginx/cache keys_zone=MYBATIS_CACHE:60m levels=1:2 inactive=3h max_size=20g;
+
+        server {
+            listen 80 default_server;
+    #         listen 80 http2 default_server;
+    #         listen [::]:80 http2 default_server;
+            listen [::]:80 default_server;
+
+            root asd/qwe/qwe;
+
+            server_name mynginx.com www.mynginx.com;
+
+            add_header X-GG-Cache-Status $upstream_cache_status;
+
+            location /mybatis {
+                proxy_pass            http://mybatis;
+                proxy_set_header      X-Real-IP $remote_addr;
+                proxy_set_header      X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header      Host $http_host;
+                limit_rate_after      1m;
+                limit_rate            1m;
+                proxy_cache           MYBATIS_CACHE;
+                proxy_cache_valid     200 15s;
+                proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+                proxy_cache_lock      on;
+                proxy_cache_lock_age  3s;
+                proxy_cache_lock_timeout 2s;
+                auth_basic            "Mybatis auth setup";
+                auth_basic_user_file  conf.d/authdetails;
+    #             allow                 127.0.0.1;
+    #             allow                 172.21.0.1;
+    #             deny                  all;
+            }
+
+            # Media: images, icons, video, audio, HTC
+            location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|mp3|ogg|ogv|webm|htc|woff2|woff)$ {
+                expires 1d;
+                access_log off;
+                add_header Cache-Control "max-age=86400, public";
+            }
+
+            # CSS and Javascript
+            location ~* \.(?:css|js)$ {
+                expires 1m;
+                access_log off;
+                add_header Cache-Control "max-age=60, public";
+            }
+        }
+    }
+
+    # stream {
+    #     upstream myrabbit {
+    #         server rabbitmq:5672;
+    #         server rabbitmq-2:5672;
+    #         server rabbitmq-3:5672;
+    #     }
+    #
+    #     server {
+    #         listen 81;
+    #         proxy_pass myrabbit;
+    #     }
+    # }
+
+    events {
+
+    }
+  authdetails: |
+    admin:O26r2KIp4hZn6:thisisadmin
+    user:O26r2KIp4hZn6:normaluser
+    root:O26r2KIp4hZn6:devrootuser
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 80
+          #            - containerPort: 81
+          volumeMounts:
+            - mountPath: /etc/nginx
+              name: nginx-config
+              readOnly: true
+          env:
+            - name: TZ
+              value: "Europe/Minsk"
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+              - key: authdetails
+                path: conf.d/authdetails
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 9999
+      targetPort: 80
+#    - protocol: TCP
+#      port: 10000
+#      targetPort: 81
