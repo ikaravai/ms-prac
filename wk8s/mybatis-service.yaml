@@ -4,15 +4,15 @@ metadata:
   name: postgres-secret
 type: Opaque
 data:
-  postgres-user: dXNlcg==
-  postgres-password: cGFzc3dvcmQ=
+  postgres-user: cG9zdGdyZXM=
+  postgres-password: cG9zdGdyZXM=
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  postgres-url: jdbc:postgresql://postgres:5432/mybatis
+  postgres-url: jdbc:postgresql://postgres-service:5432/mybatis
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,7 +32,8 @@ spec:
     spec:
       containers:
         - name: mybatis-service
-          image: ikaravai/jbogor:1.1
+          image: test/mybatis-service
+          imagePullPolicy: Never
           ports:
             - containerPort: 9090
           env:
@@ -51,12 +52,23 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: postgres-url
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-user
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mybatis-service-service
 spec:
+#  type: ClusterIP
   type: NodePort
   selector:
     app: mybatis-service
@@ -64,4 +76,4 @@ spec:
     - protocol: TCP
       port: 9090
       targetPort: 9090
-      nodePort: 31000
+      nodePort: 30500

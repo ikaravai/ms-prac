@@ -12,15 +12,12 @@ data:
             least_conn;
             server mybatis-service-service:9090 max_fails=3 fail_timeout=1s weight=5;
             server mybatis-sub-service-service:9091    backup;
-    #         server my-config-service:8071    backup;
         }
 
         proxy_cache_path /var/nginx/cache keys_zone=MYBATIS_CACHE:60m levels=1:2 inactive=3h max_size=20g;
 
         server {
             listen 80 default_server;
-    #         listen 80 http2 default_server;
-    #         listen [::]:80 http2 default_server;
             listen [::]:80 default_server;
 
             root asd/qwe/qwe;
@@ -44,9 +41,11 @@ data:
                 proxy_cache_lock_timeout 2s;
                 auth_basic            "Mybatis auth setup";
                 auth_basic_user_file  conf.d/authdetails;
-    #             allow                 127.0.0.1;
-    #             allow                 172.21.0.1;
-    #             deny                  all;
+                allow                 172.17.0.0/24;
+                allow                 127.0.0.0/24;
+                allow                 127.0.0.1;
+                allow                 10.0.0.0/8;
+                deny                  all;
             }
 
             # Media: images, icons, video, audio, HTC
@@ -65,19 +64,6 @@ data:
         }
     }
 
-    # stream {
-    #     upstream myrabbit {
-    #         server rabbitmq:5672;
-    #         server rabbitmq-2:5672;
-    #         server rabbitmq-3:5672;
-    #     }
-    #
-    #     server {
-    #         listen 81;
-    #         proxy_pass myrabbit;
-    #     }
-    # }
-
     events {
 
     }
@@ -85,6 +71,105 @@ data:
     admin:O26r2KIp4hZn6:thisisadmin
     user:O26r2KIp4hZn6:normaluser
     root:O26r2KIp4hZn6:devrootuser
+  mime.types: |
+    types {
+      text/html                                        html htm shtml;
+      text/css                                         css;
+      text/xml                                         xml;
+      image/gif                                        gif;
+      image/jpeg                                       jpeg jpg;
+      application/javascript                           js;
+      application/atom+xml                             atom;
+      application/rss+xml                              rss;
+  
+      text/mathml                                      mml;
+      text/plain                                       txt;
+      text/vnd.sun.j2me.app-descriptor                 jad;
+      text/vnd.wap.wml                                 wml;
+      text/x-component                                 htc;
+  
+      image/avif                                       avif;
+      image/png                                        png;
+      image/svg+xml                                    svg svgz;
+      image/tiff                                       tif tiff;
+      image/vnd.wap.wbmp                               wbmp;
+      image/webp                                       webp;
+      image/x-icon                                     ico;
+      image/x-jng                                      jng;
+      image/x-ms-bmp                                   bmp;
+  
+      font/woff                                        woff;
+      font/woff2                                       woff2;
+  
+      application/java-archive                         jar war ear;
+      application/json                                 json;
+      application/mac-binhex40                         hqx;
+      application/msword                               doc;
+      application/pdf                                  pdf;
+      application/postscript                           ps eps ai;
+      application/rtf                                  rtf;
+      application/vnd.apple.mpegurl                    m3u8;
+      application/vnd.google-earth.kml+xml             kml;
+      application/vnd.google-earth.kmz                 kmz;
+      application/vnd.ms-excel                         xls;
+      application/vnd.ms-fontobject                    eot;
+      application/vnd.ms-powerpoint                    ppt;
+      application/vnd.oasis.opendocument.graphics      odg;
+      application/vnd.oasis.opendocument.presentation  odp;
+      application/vnd.oasis.opendocument.spreadsheet   ods;
+      application/vnd.oasis.opendocument.text          odt;
+      application/vnd.openxmlformats-officedocument.presentationml.presentation
+                                                       pptx;
+      application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                                                       xlsx;
+      application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                                                       docx;
+      application/vnd.wap.wmlc                         wmlc;
+      application/wasm                                 wasm;
+      application/x-7z-compressed                      7z;
+      application/x-cocoa                              cco;
+      application/x-java-archive-diff                  jardiff;
+      application/x-java-jnlp-file                     jnlp;
+      application/x-makeself                           run;
+      application/x-perl                               pl pm;
+      application/x-pilot                              prc pdb;
+      application/x-rar-compressed                     rar;
+      application/x-redhat-package-manager             rpm;
+      application/x-sea                                sea;
+      application/x-shockwave-flash                    swf;
+      application/x-stuffit                            sit;
+      application/x-tcl                                tcl tk;
+      application/x-x509-ca-cert                       der pem crt;
+      application/x-xpinstall                          xpi;
+      application/xhtml+xml                            xhtml;
+      application/xspf+xml                             xspf;
+      application/zip                                  zip;
+  
+      application/octet-stream                         bin exe dll;
+      application/octet-stream                         deb;
+      application/octet-stream                         dmg;
+      application/octet-stream                         iso img;
+      application/octet-stream                         msi msp msm;
+  
+      audio/midi                                       mid midi kar;
+      audio/mpeg                                       mp3;
+      audio/ogg                                        ogg;
+      audio/x-m4a                                      m4a;
+      audio/x-realaudio                                ra;
+  
+      video/3gpp                                       3gpp 3gp;
+      video/mp2t                                       ts;
+      video/mp4                                        mp4;
+      video/mpeg                                       mpeg mpg;
+      video/quicktime                                  mov;
+      video/webm                                       webm;
+      video/x-flv                                      flv;
+      video/x-m4v                                      m4v;
+      video/x-mng                                      mng;
+      video/x-ms-asf                                   asx asf;
+      video/x-ms-wmv                                   wmv;
+      video/x-msvideo                                  avi;
+    }
 
 ---
 apiVersion: apps/v1
@@ -113,6 +198,8 @@ spec:
             - mountPath: /etc/nginx
               name: nginx-config
               readOnly: true
+            - mountPath: /var/nginx/cache
+              name: log
           env:
             - name: TZ
               value: "Europe/Minsk"
@@ -123,8 +210,12 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
+              - key: mime.types
+                path: mime.types
               - key: authdetails
                 path: conf.d/authdetails
+        - name: log
+          emptyDir: {}
 
 ---
 apiVersion: v1

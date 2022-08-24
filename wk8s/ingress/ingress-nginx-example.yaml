@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /   #new
+  name: example-app
+#  namespace: example-app
+spec:
+  tls:
+#    - hosts:
+#        - marcel.test
+      - secretName: marcel-tls-secret
+  rules:
+#    - host: marcel.test
+    - http:
+        paths:
+          - path: /nginx
+            pathType: Prefix
+            backend:
+#              serviceName: nginx-service
+              service:
+                name: nginx-service
+                port:
+                  number: 9999
+#              servicePort: 9999
+          - path: /rabbit
+            pathType: Prefix
+            backend:
+#              serviceName: rabbitmq-service
+              service:
+                name: rabbitmq-service
+                port:
+                  number: 15672
+#              servicePort: 15672

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-secret
+type: Opaque
+data:
+  rabbitmq-user: ZGVmYXVsdF91c2VyX19SY28yeTJfRmNaUVhuM3N2SnQ=
+  rabbitmq-password: dk1sLWJ2dWNuTHZ2bEVlWlU4YzZuNV9Qbzg0d0V6enM=
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-service
+spec:
+  replicas: 3
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+  service:
+    type: ClusterIP
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Policy
+metadata:
+  name: ha-policy
+#  namespace: default
+spec:
+  name: transient # name of the policy
+  vhost: "/" # default to '/' if not provided
+  pattern: "" # regex used to match queues and exchanges
+  applyTo: "all" # set to 'queues', 'exchanges', or 'all'
+  definition:
+    ha-mode:
+      all
+    ha-sync-mode:
+      automatic
+  rabbitmqClusterReference:
+    name: rabbitmq-service #name of the rabbitmqcluster
