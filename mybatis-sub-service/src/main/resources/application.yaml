@@ -20,8 +20,11 @@ server:
   port: 9091
 spring:
   rabbitmq:
-    host: nginx
+    # KUBER
+    host: rabbitmq-service
+#    host: nginx
 #    host: rabbitmq
-    username: root
-    password: root
-    port: 81
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+    port: 5672
+#    port: 81

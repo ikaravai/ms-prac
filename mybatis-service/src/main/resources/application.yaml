@@ -1,14 +1,21 @@
 spring:
   rabbitmq:
-    host: nginx
+    # KUBER VER
+    host: rabbitmq-service
+#    host: nginx
 #    host: rabbitmq
-    username: root
-    password: root
-    port: 81
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+    port: 5672
+#    port: 81
   datasource:
-    url: jdbc:postgresql://postgres:5432/mybatis
-    username: postgres
-    password: postgres
+    #    url: jdbc:postgresql://postgres:5432/mybatis
+    #    username: postgres
+    #    password: postgres
+    # KUBERNETES vER
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   sql:
     init:
       schema-locations: classpath:/sql/schema.sql

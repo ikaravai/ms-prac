@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /   #new
+  name: example-app
+  namespace: mybatis
+spec:
+  tls:
+    - hosts:
+        - marcel.test
+      secretName: marcel-tls-secret
+  rules:
+    - host: marcel.test
+      http:
+        paths:
+          - path: /v1/hello
+            backend:
+              serviceName: mybatis-service
+              servicePort: 9090
+          - path: /v2/hello
+            backend:
+              serviceName: mybatis-sub-service
+              servicePort: 9091

@@ -68,12 +68,13 @@ kind: Service
 metadata:
   name: mybatis-service-service
 spec:
-#  type: ClusterIP
-  type: NodePort
+  type: ClusterIP
+#  type: LoadBalancer
+#  type: NodePort
   selector:
     app: mybatis-service
   ports:
     - protocol: TCP
       port: 9090
       targetPort: 9090
-      nodePort: 30500
+#      nodePort: 30500
