@@ -1,22 +1,24 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: postgres
   name: postgres-deployment
+  namespace: mybatis
 #  namespace: default
 spec:
-  progressDeadlineSeconds: 600
+#  progressDeadlineSeconds: 600
+  serviceName: postgres-service
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: postgres
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+#  strategy:
+#    rollingUpdate:
+#      maxSurge: 25%
+#      maxUnavailable: 25%
+#    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -36,17 +38,32 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "1Gi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres-service
+  namespace: mybatis
 spec:
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: postgres
   ports:

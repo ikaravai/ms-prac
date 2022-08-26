@@ -1,3 +1,9 @@
+### Terraform ###
+*.lock.hcl
+*.tfstate
+*.tfstate.backup
+.terraform
+
 HELP.md
 .gradle
 build/

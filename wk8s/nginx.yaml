@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-config
+  namespace: mybatis
 data:
   nginx.conf: |
     http {
@@ -176,6 +177,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  namespace: mybatis
   labels:
     app: nginx
 spec:
@@ -222,6 +224,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
+  namespace: mybatis
 spec:
   type: LoadBalancer
   selector:
