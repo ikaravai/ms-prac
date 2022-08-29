@@ -5,11 +5,11 @@ resource "kubernetes_secret" "rabbitmq-secret" {
   }
   type = "Opaque"
   binary_data = {
-    rabbitmq-user = "ZGVmYXVsdF91c2VyX3VMZEE0Q0dqX25qLVFCVGZ6T3I="
-#    default_user_uLdA4CGj_nj-QBTfzOr
-#    -1N6Vg3DNIP0Khk_arIS1ys_jQPYLf9T
+    rabbitmq-user = "ZGVmYXVsdF91c2VyX3RSVWdpYjRfZV9leFg0al84V3g="
+#    default_user_tRUgib4_e_exX4j_8Wx
+#    KoOiTweC0gZVOaQB7z5rfl3xD2ykVJPj
     #    rabbitmq-user = "ZGVmYXVsdF91c2VyX19SY28yeTJfRmNaUVhuM3N2SnQ="
-    rabbitmq-password = "LTFONlZnM0ROSVAwS2hrX2FySVMxeXNfalFQWUxmOVQ="
+    rabbitmq-password = "S29PaVR3ZUMwZ1pWT2FRQjd6NXJmbDN4RDJ5a1ZKUGo="
     #    rabbitmq-password = "dk1sLWJ2dWNuTHZ2bEVlWlU4YzZuNV9Qbzg0d0V6enM="
   }
 }
