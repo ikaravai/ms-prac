@@ -46,7 +46,8 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION rofl(int, int) RETURNS RECORD
-    LANGUAGE plpgsql AS
+    LANGUAGE plpgsql
+    STABLE AS
 $$
 DECLARE
     my_rec RECORD;
@@ -66,7 +67,8 @@ END;
 $$;
 
 CREATE OR REPLACE PROCEDURE print_users(sort_type int2)
-    LANGUAGE plpgsql AS
+    LANGUAGE plpgsql
+    STABLE AS
 $$
 DECLARE
     record_count SMALLINT := 10;
@@ -90,7 +92,8 @@ END;
 $$;
 
 CREATE OR REPLACE PROCEDURE evaluate_user_name(user_id bigint)
-    LANGUAGE plpgsql AS
+    LANGUAGE plpgsql
+    STABLE AS
 $$
 DECLARE
     target_name users.name%TYPE;
@@ -112,7 +115,8 @@ END;
 $$;
 
 CREATE OR REPLACE PROCEDURE number_pairs(first_limit int, second_limit int)
-    LANGUAGE plpgsql AS
+    LANGUAGE plpgsql
+    STABLE AS
 $this_procedure$
 DECLARE
     i int := 0;
@@ -132,5 +136,36 @@ BEGIN
             RAISE NOTICE '(i,j) :: (%,%)', i, j;
         END LOOP innerloop;
     END LOOP outerloop;
-    END;
+END;
 $this_procedure$;
+
+-- FETCH PRACT
+BEGIN WORK;
+
+DECLARE my_cursor SCROLL CURSOR FOR SELECT * FROM users;
+FETCH FORWARD 3 FROM my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+FETCH RELATIVE 3 FROM my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+FETCH PRIOR FROM my_cursor;
+FETCH FIRST FROM my_cursor;
+
+CLOSE my_cursor;
+COMMIT WORK;
+
+-- MOVE PRAC
+BEGIN WORK;
+
+DECLARE my_cursor SCROLL CURSOR FOR SELECT * FROM users;
+MOVE FORWARD 10 IN my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+MOVE FORWARD 10 IN my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+MOVE LAST IN my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+MOVE FIRST IN my_cursor;
+FETCH RELATIVE 0 FROM my_cursor;
+
+CLOSE my_cursor;
+COMMIT WORK;
