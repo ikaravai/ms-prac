@@ -1,0 +1,193 @@
+# Click the Variables button, above, to create your own variables.
+GET ${exampleVariable1} // _search
+{
+  "query": {
+    "${exampleVariable2}": {} // match_all
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search?q=email:eddie@weber-family.zzz&size=5
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match": {
+      "products.base_price": "99.99"
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_doc/h6h1-YIBvBPoCb_1QXlG?refresh
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "size": 1,
+  "terminate_after": 1,
+  "runtime_mappings": {
+    "order_day": {
+      "type": "keyword",
+      "script": {
+        "source":
+        """emit(doc['order_date'].value.dayOfWeekEnum
+        .getDisplayName(TextStyle.FULL, Locale.ROOT))"""
+      }
+    }
+  },
+  "aggs": {
+    "range": {
+      "date_range": {
+        "field": "order_date",
+        "ranges": [
+          {
+            "key": "aug_end",
+            "from": "2022-08-31T00:00:00",
+            "to": "2022-08-31T00:02:00"
+          },
+          {
+            "key": "aug_start",
+            "from": "2022-08-01",
+            "to": "2022-08-18"
+          }
+        ]
+      }
+    },
+    "order_day": {
+      "terms": {
+        "field": "order_day",
+        "size": 10
+      }
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "size": 0,
+  "runtime_mappings": {
+    "order_total": {
+      "type": "double",
+      "script": "emit(doc['taxful_total_price'].value)"
+    }
+  },
+  "aggs": {
+    "order_total": {
+      "histogram": {
+        "field": "order_total",
+        "interval": 20,
+        "hard_bounds": {
+          "min": 0,
+          "max": 200
+        }
+      }
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "size": 0,
+  "runtime_mappings": {
+    "customer_last_name_length": {
+      "type": "long",
+      "script": "emit(doc['customer_last_name.keyword'].value.length())"
+    }
+  },
+  "aggs": {
+    "LN_LENGTH_STATS": {
+      "percentiles": {
+        "field": "customer_last_name_length",
+        "percents": [
+          1,
+          5,
+          25,
+          50,
+          75,
+          95,
+          99
+        ]
+      }
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "size": 0,
+  "runtime_mappings": {
+    "product_name_length": {
+      "type": "long",
+      "script": "emit(doc['products.product_name.keyword'].value.length())"
+    }
+  },
+  "aggs": {
+    "PRODUCT NAME ANALYSIS": {
+      "histogram": {
+        "field": "product_name_length",
+        "interval": 5,
+        "hard_bounds": {
+          "min": 0,
+          "max": 100
+        }
+      }
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "track_total_hits": 2,
+  "size": 2,
+  "query": {
+    "match": {
+      "customer_gender": "FEMALE"
+    }
+  }
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "collapse": {
+    "field": "customer_gender"
+  },
+  "sort": [
+    {
+      "customer_id": {
+        "order": "desc"
+      }
+    }
+  ],
+  "from": 1
+}
+
+GET /kibana_sample_data_ecommerce/_search
+{
+  "collapse": {
+    "field": "customer_gender",
+    "inner_hits": [
+      {
+        "name": "recent",
+        "size": 1,
+        "sort": [ { "order_date": "desc" } ]
+      },
+      {
+        "name": "oldest",
+        "size": 1,
+        "sort": [ { "order_date": "asc" } ]
+      }
+    ]
+  },
+  "from": 0
+}
+
+GET /kibana_sample_data_ecommerce/_msearch
+{}
+{"query" : {"match_all" : {}}, "from" : 0, "size" : 2}
+{}
+{"query" : {"match_all" : {}}, "from" : 2, "size" : 2}
+
+GET /kibana_sample_data_ecommerce/_msearch
+{}
+{ "collapse": { "field": "customer_gender"}, "size": 1, "from": 0}
+{}
+{ "collapse": { "field": "customer_gender"}, "size": 1, "from": 1}
+
